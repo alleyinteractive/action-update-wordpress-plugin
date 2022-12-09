@@ -68,7 +68,7 @@ else
 fi
 
 # Replace the 'Tested up to' version in the plugin file.
-sed -i "" "s/Tested up to: .*/Tested up to: $WP_VERSION/g" $PLUGIN_FILE
+sed -i "s/Tested up to: .*/Tested up to: $WP_VERSION/g" $PLUGIN_FILE
 
 # Commit all the changes.
 git add .
