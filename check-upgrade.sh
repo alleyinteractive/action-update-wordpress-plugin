@@ -54,8 +54,9 @@ echo "[action-update-wordpress-plugin] Upgrading plugin to $WP_VERSION ..."
 
 set -e
 
-# Checkout a new branch.
-git checkout -b "action/upgrade-to-$WP_VERSION"
+# Checkout a new branch including the current time
+BRANCH_NAME="action/upgrade-to-$WP_VERSION-$(date +%s)"
+git checkout -b "$BRANCH"
 
 # npm ci if UPGRADE_DEPENDENCIES is not equal to "false".
 if [ "$UPGRADE_DEPENDENCIES" != "false" ]; then
@@ -76,10 +77,10 @@ git config --global user.name "$GITHUB_ACTOR"
 
 # Commit all the changes.
 git add -A && git commit -m "Upgrade plugin to $WP_VERSION"
-git push origin "action/upgrade-to-$WP_VERSION"
+git push origin "$BRANCH_NAME"
 
 # Create a pull request.
-gh pr create --title "Upgrade plugin to $WP_VERSION" --body "Upgrade plugin to $WP_VERSION" --head "action/upgrade-to-$WP_VERSION"
+gh pr create --title "Upgrade plugin to $WP_VERSION" --body "Upgrade plugin to \`$WP_VERSION\`" --head "$BRANCH_NAME"
 
 echo "[action-update-wordpress-plugin] Pull request created"
 exit 0
