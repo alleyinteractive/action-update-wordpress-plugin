@@ -70,9 +70,12 @@ fi
 # Replace the 'Tested up to' version in the plugin file.
 sed -i "s/Tested up to: .*/Tested up to: $WP_VERSION/g" $PLUGIN_FILE
 
+# Setup Git.
+git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+git config --global user.name "$GITHUB_ACTOR"
+
 # Commit all the changes.
-git add .
-git commit -m "Upgrade plugin to $WP_VERSION"
+git add -A && git commit -m "Upgrade plugin to $WP_VERSION"
 git push origin "action/upgrade-to-$WP_VERSION"
 
 # Create a pull request.
