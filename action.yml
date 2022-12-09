@@ -1,0 +1,29 @@
+name: 'Update WordPress Plugin'
+description: 'Update your create-wordpress-plugin based plugin with the latest dependencies when a new core version is released'
+author: 'alleyinteractive'
+branding:
+  color: 'orange'
+  icon: 'refresh-ccw'
+inputs:
+  plugin-file:
+    description: 'The main file for the plugin'
+    default: "plugin.php"
+    required: false
+  upgrade-npm-dependencies:
+    description: 'Upgrade the npm dependencies of the plugin to match WordPress'
+    default: "true"
+    required: false
+runs:
+  using: 'composite'
+  steps:
+    - id: setup-node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
+    - id: check-upgrade
+      env:
+        PLUGIN_FILE: ${{ inputs.plugin-file }}
+        UPGRADE_DEPENDENCIES: ${{ inputs.upgrade-npm-dependencies }}
+      run: ${{ github.action_path }}/check-upgrade.sh
+      shell: bash
