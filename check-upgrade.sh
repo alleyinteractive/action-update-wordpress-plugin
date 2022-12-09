@@ -39,6 +39,7 @@ echo "[action-update-wordpress-plugin] Latest WordPress version:        $WP_VERS
 echo "[action-update-wordpress-plugin] Latest plugin supported version: $LATEST_VERSION"
 
 # Check if the latest plugin version is less than the latest WordPress version.
+# shellcheck disable=SC2001
 if [ "$(echo "$LATEST_VERSION" | sed 's/\.//g')" -gt "$(echo "$WP_VERSION" | sed 's/\.//g')" ]; then
 	echo "[action-update-wordpress-plugin] Plugin is already up-to-date, no upgrade needed."
 	exit 0
@@ -63,13 +64,13 @@ if [ "$UPGRADE_DEPENDENCIES" != "false" ]; then
 	npm ci
 
 	# Run the "npm run packages-update" command.
-	npm run packages-update --dist-tag=wp-$WP_VERSION
+	npm run packages-update --dist-tag="wp-$WP_VERSION"
 else
 	echo "[action-update-wordpress-plugin] Skipping dependency upgrade."
 fi
 
 # Replace the 'Tested up to' version in the plugin file.
-sed -i "s/Tested up to: .*/Tested up to: $WP_VERSION/g" $PLUGIN_FILE
+sed -i "s/Tested up to: .*/Tested up to: $WP_VERSION/g" "$PLUGIN_FILE"
 
 # Setup Git.
 git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
