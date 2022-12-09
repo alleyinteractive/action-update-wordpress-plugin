@@ -18,15 +18,17 @@ the name of the file using the `plugin-file` input.
 
 ```yaml
 name: Update WordPress Plugin
+
 on:
   schedule:
     - cron: '0 0 * * *'
+
 jobs:
   update-plugin:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: alleyinteractive/action-update-wordpress-plugin@develop
+    - uses: actions/checkout@v3
+    - uses: alleyinteractive/action-update-wordpress-plugin@feature
       with:
         plugin-file: 'plugin.php'
         upgrade-npm-dependencies: "true"

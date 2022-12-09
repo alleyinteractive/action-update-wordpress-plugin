@@ -4,13 +4,13 @@
 
 # Ensure PLUGIN_FILE is set.
 if [ -z "$PLUGIN_FILE" ]; then
-	echo "PLUGIN_FILE is not set."
+	echo "[action-update-wordpress-plugin] PLUGIN_FILE is not set."
 	exit 1
 fi
 
 # Check if PLUGIN_FILE exists.
 if [ ! -f "$PLUGIN_FILE" ]; then
-	echo "$PLUGIN_FILE does not exist."
+	echo "[action-update-wordpress-plugin] $PLUGIN_FILE does not exist."
 	exit 1
 fi
 
@@ -22,7 +22,7 @@ LATEST_VERSION=$(echo "$LATEST_VERSION" | awk -F. '{printf("%d.%d.%d\n", $1,$2,$
 
 # Check if the latest version is set and not empty.
 if [ -z "$LATEST_VERSION" ]; then
-	echo "Latest version is not set."
+	echo "[action-update-wordpress-plugin] Latest version is not set."
 	exit 1
 fi
 
@@ -31,26 +31,26 @@ WP_VERSION=$(curl -s https://api.wordpress.org/core/version-check/1.7/ | jq -r '
 
 # Early exist if they're the same version.
 if [ "$WP_VERSION" == "$LATEST_VERSION" ]; then
-	echo "Latest WordPress version and plugin-supported version are the same, no upgrade needed."
+	echo "[action-update-wordpress-plugin] Latest WordPress version and plugin-supported version are the same, no upgrade needed."
 	exit 0
 fi
 
-echo "Latest WordPress version:        $WP_VERSION"
-echo "Latest plugin supported version: $LATEST_VERSION"
+echo "[action-update-wordpress-plugin] Latest WordPress version:        $WP_VERSION"
+echo "[action-update-wordpress-plugin] Latest plugin supported version: $LATEST_VERSION"
 
 # Check if the latest plugin version is less than the latest WordPress version.
 if [ "$(echo "$LATEST_VERSION" | sed 's/\.//g')" -gt "$(echo "$WP_VERSION" | sed 's/\.//g')" ]; then
-	echo "Plugin is already up-to-date, no upgrade needed."
+	echo "[action-update-wordpress-plugin] Plugin is already up-to-date, no upgrade needed."
 	exit 0
 fi
 
 # Check if a pull request already exists with the gh cli.
 if [ "$(gh pr list --search "Upgrade plugin to $WP_VERSION" | wc -l)" -gt 0 ]; then
-	echo "Pull request already exists, no upgrade needed."
+	echo "[action-update-wordpress-plugin] Pull request already exists, no upgrade needed."
 	exit 0
 fi
 
-echo "Upgrading plugin to $WP_VERSION ..."
+echo "[action-update-wordpress-plugin] Upgrading plugin to $WP_VERSION ..."
 
 set -e
 
@@ -64,13 +64,11 @@ if [ "$UPGRADE_DEPENDENCIES" != "false" ]; then
 	# Run the "npm run packages-update" command.
 	npm run packages-update --dist-tag=wp-$WP_VERSION
 else
-	echo "Skipping dependency upgrade."
+	echo "[action-update-wordpress-plugin] Skipping dependency upgrade."
 fi
 
 # Replace the 'Tested up to' version in the plugin file.
-sed -i "" "s/Tested up to: .*/Tested up to: $WP_VERSION/g" plugin.php
-
-exit 0
+sed -i "" "s/Tested up to: .*/Tested up to: $WP_VERSION/g" $PLUGIN_FILE
 
 # Commit all the changes.
 git add .
@@ -80,4 +78,5 @@ git push origin "action/upgrade-to-$WP_VERSION"
 # Create a pull request.
 gh pr create --title "Upgrade plugin to $WP_VERSION" --body "Upgrade plugin to $WP_VERSION" --head "action/upgrade-to-$WP_VERSION"
 
-echo "Pull request created."
+echo "[action-update-wordpress-plugin] Pull request created"
+exit 0
