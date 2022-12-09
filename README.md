@@ -10,7 +10,7 @@ npm
 script](https://github.com/alleyinteractive/create-wordpress-plugin#updating-wp-dependencies)
 to update the WordPress plugin dependencies to match the latest WordPress version.
 
-### Usage
+## Usage
 
 By default, the plugin will look for a `plugin.php` file in the root of the
 repository. If your plugin's main file is named something else, you can specify
@@ -20,8 +20,13 @@ the name of the file using the `plugin-file` input.
 name: Update WordPress Plugin
 
 on:
+  pull_request:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   update-plugin:
@@ -32,11 +37,21 @@ jobs:
       with:
         plugin-file: 'plugin.php'
         upgrade-npm-dependencies: "true"
+
 ```
 
-### Changelog
+The action assumes that a `package-lock.json` file exists in the root of the
+repository to run `npm ci`.
 
-#### 1.0.0
+### Inputs
+
+- `plugin-file` - The name of the plugin's main file. Defaults to `plugin.php`.
+- `upgrade-npm-dependencies` - Whether or not to run the `packages-update` npm
+  script. Defaults to `"true"`. Set to `"false"` to disable.
+
+## Changelog
+
+### 1.0.0
 
 - Initial release.
 
