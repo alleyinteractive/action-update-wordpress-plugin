@@ -46,7 +46,7 @@ if [ "$(echo "$LATEST_VERSION" | sed 's/\.//g')" -gt "$(echo "$WP_VERSION" | sed
 fi
 
 # Check if a pull request already exists with the gh cli.
-if [ "$(gh pr list --search "Upgrade plugin to WordPress $WP_VERSION" | wc -l)" -gt 0 ]; then
+if [ "$(gh pr list --search "Upgrade plugin to WordPress $WP_VERSION" --state "all" | wc -l)" -gt 0 ]; then
 	echo "[action-update-wordpress-plugin] Pull request already exists, no upgrade needed."
 	exit 0
 fi
