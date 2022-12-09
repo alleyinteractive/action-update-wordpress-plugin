@@ -45,7 +45,7 @@ if [ "$(echo "$LATEST_VERSION" | sed 's/\.//g')" -gt "$(echo "$WP_VERSION" | sed
 fi
 
 # Check if a pull request already exists with the gh cli.
-if [ "$(gh pr list --search "Upgrade plugin to $WP_VERSION" | wc -l)" -gt 0 ]; then
+if [ "$(gh pr list --search "Upgrade plugin to WordPress $WP_VERSION" | wc -l)" -gt 0 ]; then
 	echo "[action-update-wordpress-plugin] Pull request already exists, no upgrade needed."
 	exit 0
 fi
@@ -80,7 +80,7 @@ git add -A && git commit -m "Upgrade plugin to $WP_VERSION"
 git push origin "$BRANCH_NAME"
 
 # Create a pull request.
-gh pr create --title "Upgrade plugin to $WP_VERSION" --body "Upgrade plugin to \`$WP_VERSION\`" --head "$BRANCH_NAME"
+gh pr create --title "Upgrade plugin to WordPress $WP_VERSION" --body "Upgrade plugin to \`$WP_VERSION\`" --head "$BRANCH_NAME"
 
 echo "[action-update-wordpress-plugin] Pull request created"
 exit 0
