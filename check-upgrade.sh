@@ -81,7 +81,7 @@ git add -A && git commit -m "Upgrade plugin to $WP_VERSION"
 git push origin "$BRANCH_NAME"
 
 # Create a pull request.
-gh pr create --title "Upgrade plugin to WordPress $WP_VERSION" --body "Upgrade plugin to \`$WP_VERSION\`" --head "$BRANCH_NAME"
+gh pr create --title "Upgrade plugin to WordPress $WP_VERSION" --body "- [ ] Test plugin against WordPress \`$WP_VERSION\`" --head "$BRANCH_NAME"
 
 echo "[action-update-wordpress-plugin] Pull request created"
 exit 0
