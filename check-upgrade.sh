@@ -56,7 +56,7 @@ set -e
 
 # Checkout a new branch including the current time
 BRANCH_NAME="action/upgrade-to-$WP_VERSION-$(date +%s)"
-git checkout -b "$BRANCH"
+git checkout -b "$BRANCH_NAME"
 
 # npm ci if UPGRADE_DEPENDENCIES is not equal to "false".
 if [ "$UPGRADE_DEPENDENCIES" != "false" ]; then
