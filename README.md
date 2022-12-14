@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: alleyinteractive/action-update-wordpress-plugin@1.0.0
+    - uses: alleyinteractive/action-update-wordpress-plugin@v1.0.0
       with:
         plugin-file: 'plugin.php'
         upgrade-npm-dependencies: "true"
