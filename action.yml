@@ -20,7 +20,6 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: 16
-        cache: 'npm'
     - id: check-upgrade
       env:
         PLUGIN_FILE: ${{ inputs.plugin-file }}

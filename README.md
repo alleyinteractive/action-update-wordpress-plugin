@@ -51,6 +51,10 @@ repository to run `npm ci`.
 
 ## Changelog
 
+### 1.0.1
+
+- Disable caching of NPM to fix issue with `npm ci` not working.
+
 ### 1.0.0
 
 - Initial release.
