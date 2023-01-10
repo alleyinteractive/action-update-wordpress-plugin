@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: alleyinteractive/action-update-wordpress-plugin@v1.0.0
+    - uses: alleyinteractive/action-update-wordpress-plugin@v1
       with:
         plugin-file: 'plugin.php'
         upgrade-npm-dependencies: "true"
@@ -51,9 +51,13 @@ repository to run `npm ci`.
 
 ## Changelog
 
-### 1.0.1
+### 1.0.2
 
 - Disable caching of NPM to fix issue with `npm ci` not working.
+
+### 1.0.1
+
+- No changes, just a new release to fix the release workflow.
 
 ### 1.0.0
 
