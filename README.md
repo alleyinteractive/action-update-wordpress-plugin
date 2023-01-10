@@ -51,6 +51,11 @@ repository to run `npm ci`.
 
 ## Changelog
 
+### 1.1.0
+
+- Update action to check if `package.json` exists before running `npm ci` (even
+  if `upgrade-npm-dependencies` is set to `true`).
+
 ### 1.0.2
 
 - Disable caching of NPM to fix issue with `npm ci` not working.
