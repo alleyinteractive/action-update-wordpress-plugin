@@ -61,10 +61,15 @@ git checkout -b "$BRANCH_NAME"
 
 # npm ci if UPGRADE_DEPENDENCIES is not equal to "false".
 if [ "$UPGRADE_DEPENDENCIES" != "false" ]; then
-	npm ci
+	# Check if package.json exists.
+	if [ ! -f "package.json" ]; then
+		echo "[action-update-wordpress-plugin] package.json does not exist, skipping dependency upgrade."
+	else
+		npm ci
 
-	# Run the "npm run packages-update" command.
-	npm run packages-update --dist-tag="wp-$WP_VERSION"
+		# Run the "npm run packages-update" command.
+		npm run packages-update --dist-tag="wp-$WP_VERSION"
+	fi
 else
 	echo "[action-update-wordpress-plugin] Skipping dependency upgrade."
 fi
