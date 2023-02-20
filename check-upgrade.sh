@@ -67,8 +67,8 @@ if [ "$UPGRADE_DEPENDENCIES" != "false" ]; then
 	else
 		npm ci
 
-		# Run the "npm run packages-update" command.
-		npm run packages-update --dist-tag="wp-$WP_VERSION"
+		# Run the "npx wp-scripts packages-update" command.
+		npx wp-scripts packages-update --dist-tag="wp-$WP_VERSION"
 	fi
 else
 	echo "[action-update-wordpress-plugin] Skipping dependency upgrade."
