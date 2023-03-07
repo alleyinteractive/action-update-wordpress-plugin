@@ -51,6 +51,10 @@ repository to run `npm ci`.
 
 ## Changelog
 
+### 1.2.0
+
+- Changes action to use `npx wp-scripts packages-update` instead of `npm run packages-update`.
+
 ### 1.1.0
 
 - Update action to check if `package.json` exists before running `npm ci` (even
