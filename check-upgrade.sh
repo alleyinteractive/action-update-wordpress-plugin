@@ -38,11 +38,16 @@ fi
 echo "[action-update-wordpress-plugin] Latest WordPress version:        $WP_VERSION"
 echo "[action-update-wordpress-plugin] Latest plugin supported version: $LATEST_VERSION"
 
-# Check if the latest plugin version is less than the latest WordPress version.
-# shellcheck disable=SC2001
-if [ "$(echo "$LATEST_VERSION" | sed 's/\.//g')" -gt "$(echo "$WP_VERSION" | sed 's/\.//g')" ]; then
-	echo "[action-update-wordpress-plugin] Plugin is already up-to-date, no upgrade needed."
+# Check if the latest plugin version is less than the latest WordPress version, comparing the semantically versioned numbers.
+function version_gt() {
+	test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+}
+
+if version_gt "$LATEST_VERSION" "$WP_VERSION"; then
+	echo "[action-update-wordpress-plugin] Latest WordPress version is greater than the latest plugin supported version, no upgrade needed."
 	exit 0
+else
+	echo "[action-update-wordpress-plugin] Latest WordPress version is less than the latest plugin supported version, upgrade needed."
 fi
 
 # Check if a pull request already exists with the gh cli.
