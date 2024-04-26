@@ -13,13 +13,17 @@ inputs:
     description: 'Upgrade the npm dependencies of the plugin to match WordPress'
     default: "true"
     required: false
+  node-version:
+    description: 'The version of Node.js to use'
+    default: "lts"
+    required: false
 runs:
   using: 'composite'
   steps:
     - id: setup-node
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: ${{ inputs.node-version }}
     - id: check-upgrade
       env:
         PLUGIN_FILE: ${{ inputs.plugin-file }}
