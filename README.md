@@ -37,6 +37,7 @@ jobs:
       with:
         plugin-file: 'plugin.php'
         upgrade-npm-dependencies: "true"
+        node-version: '20'  # Specify the Node.js version if not lts
 
 ```
 
@@ -48,8 +49,14 @@ repository to run `npm ci`.
 - `plugin-file` - The name of the plugin's main file. Defaults to `plugin.php`.
 - `upgrade-npm-dependencies` - Whether or not to run the `packages-update` npm
   script. Defaults to `"true"`. Set to `"false"` to disable.
+- `node-version` - The version of Node.js to use for running the action. Defaults to `"lts"`. Specify any version number or tag supported by actions/setup-node@v3 (e.g., `18`, `20`, `lts`, `latest`, etc.).
+
 
 ## Changelog
+
+### 2.0.0
+
+- Update action to allow node-version input (defaults to `lts`). *This is a breaking change*, as the action previously used Node.js 16.x.
 
 ### 1.2.1
 
