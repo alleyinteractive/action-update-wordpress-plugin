@@ -55,9 +55,9 @@ repository to run `npm ci`.
 
 ## Changelog
 
-### 1.2.2
+### 2.0.0
 
-- Update action to allow node-version input (defaults to `lts`).
+- Update action to allow node-version input (defaults to `lts`). *This is a breaking change*, as the action previously used Node.js 16.x.
 
 ### 1.2.1
 
