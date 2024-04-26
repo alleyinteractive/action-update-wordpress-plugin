@@ -39,7 +39,6 @@ jobs:
         upgrade-npm-dependencies: "true"
         node-version: '20'  # Specify the Node.js version if not lts
 
-
 ```
 
 The action assumes that a `package-lock.json` file exists in the root of the
