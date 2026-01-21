@@ -15,7 +15,7 @@ inputs:
     required: false
   node-version:
     description: 'The version of Node.js to use'
-    default: "lts"
+    default: "lts/*"
     required: false
 runs:
   using: 'composite'
