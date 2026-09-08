@@ -60,7 +60,7 @@ test_updates_existing_pull_request() {
 	assert_contains "$COMMAND_LOG" "git checkout -B action/upgrade-to-6.7.0-1700000000 origin/action/upgrade-to-6.7.0-1700000000"
 	assert_contains "$COMMAND_LOG" "git push origin action/upgrade-to-6.7.0-1700000000"
 	assert_contains "$COMMAND_LOG" "gh pr edit 42 --title Upgrade plugin to WordPress 6.8.0"
-	assert_contains "$COMMAND_LOG" 'gh pr comment 42 --body Updated this pull request from WordPress `6.7.0` to `6.8.0` instead of opening a new pull request. <!-- action-update-wordpress-plugin:6.8.0 -->'
+	assert_contains "$COMMAND_LOG" "gh pr comment 42 --body Updated this pull request from WordPress \`6.7.0\` to \`6.8.0\` instead of opening a new pull request. <!-- action-update-wordpress-plugin:6.8.0 -->"
 	assert_not_contains "$COMMAND_LOG" "gh pr create"
 
 	teardown_case
@@ -123,7 +123,7 @@ test_repairs_pull_request_metadata_after_push_succeeds() {
 	"$ROOT_DIR/check-upgrade.sh" > "$TEST_DIR/output.log"
 
 	assert_contains "$COMMAND_LOG" "gh pr edit 42 --title Upgrade plugin to WordPress 6.8.0"
-	assert_contains "$COMMAND_LOG" 'gh pr comment 42 --body Updated this pull request from WordPress `6.7.0` to `6.8.0` instead of opening a new pull request. <!-- action-update-wordpress-plugin:6.8.0 -->'
+	assert_contains "$COMMAND_LOG" "gh pr comment 42 --body Updated this pull request from WordPress \`6.7.0\` to \`6.8.0\` instead of opening a new pull request. <!-- action-update-wordpress-plugin:6.8.0 -->"
 	assert_not_contains "$COMMAND_LOG" "git commit"
 	assert_not_contains "$COMMAND_LOG" "git push"
 
