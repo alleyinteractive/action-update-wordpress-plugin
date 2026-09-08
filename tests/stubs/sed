@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+/usr/bin/sed "$2" "$3" > "$3.tmp"
+mv "$3.tmp" "$3"

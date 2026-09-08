@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+printf 'git %s\n' "$*" >> "$COMMAND_LOG"
+
+if [ "$1" = "checkout" ] && [ -n "${CHECKOUT_PLUGIN_VERSION-}" ]; then
+	printf '%s\n' '<?php' " * Tested up to: $CHECKOUT_PLUGIN_VERSION" > "$PLUGIN_FILE"
+fi
+
+if [ "$1" = "show" ] && [ -n "${PARENT_PLUGIN_VERSION-}" ]; then
+	printf '%s\n' '<?php' " * Tested up to: $PARENT_PLUGIN_VERSION"
+fi

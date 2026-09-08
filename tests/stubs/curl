@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+printf '{"offers":[{"version":"%s"}]}\n' "${WORDPRESS_VERSION:-6.8.0}"
