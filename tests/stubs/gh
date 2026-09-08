@@ -2,6 +2,10 @@
 
 printf 'gh %s\n' "$*" >> "$COMMAND_LOG"
 
+if [ "$1 $2" = "pr edit" ] && [ "${GH_PR_EDIT_FAIL-}" = "true" ]; then
+	exit 1
+fi
+
 if [ "$1 $2" = "pr list" ]; then
 	if [ "${GH_PR_LIST_FAIL-}" = "true" ]; then
 		exit 1

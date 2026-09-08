@@ -33,13 +33,13 @@ setup_case() {
 	export UPGRADE_DEPENDENCIES=false
 	export GITHUB_ACTOR=github-actions
 	export GH_PR_LIST_OUTPUT=${1:-[]}
-	unset CHECKOUT_PLUGIN_VERSION GH_API_FAIL GH_PR_COMMENTS_OUTPUT GH_PR_LIST_FAIL PARENT_PLUGIN_VERSION WORDPRESS_VERSION
+	unset CHECKOUT_PLUGIN_VERSION GH_API_FAIL GH_PR_COMMENTS_OUTPUT GH_PR_EDIT_FAIL GH_PR_LIST_FAIL GIT_FETCH_FAIL PARENT_PLUGIN_VERSION WORDPRESS_VERSION
 
 	printf '%s\n' '<?php' ' * Tested up to: 6.7.0' > "$PLUGIN_FILE"
 	: > "$COMMAND_LOG"
 	mkdir "$TEST_DIR/bin"
 
-	for command in curl date gh git sed sort; do
+	for command in curl date gh git npm npx sed sort; do
 		ln -s "$ROOT_DIR/tests/stubs/$command" "$TEST_DIR/bin/$command"
 	done
 
@@ -191,6 +191,79 @@ test_stops_when_comment_lookup_fails() {
 	echo "ok - stops when comment lookup fails"
 }
 
+test_stops_before_github_when_default_branch_is_current() {
+	setup_case
+	printf '%s\n' '<?php' ' * Tested up to: 6.8.0' > "$PLUGIN_FILE"
+
+	"$ROOT_DIR/check-upgrade.sh" > "$TEST_DIR/output.log"
+
+	assert_contains "$TEST_DIR/output.log" "Latest WordPress version and plugin-supported version are the same, no upgrade needed."
+	assert_not_contains "$COMMAND_LOG" "gh "
+	assert_not_contains "$COMMAND_LOG" "git "
+
+	teardown_case
+	echo "ok - stops before GitHub when the default branch is current"
+}
+
+test_stops_when_existing_branch_fetch_fails() {
+	setup_case '[{"number":42,"headRefName":"action/upgrade-to-6.7.0-1700000000","title":"Upgrade plugin to WordPress 6.7.0","isCrossRepository":false}]'
+	export GIT_FETCH_FAIL=true
+
+	if "$ROOT_DIR/check-upgrade.sh" > "$TEST_DIR/output.log" 2>&1; then
+		fail "Expected branch fetch failure to stop the action"
+	fi
+
+	assert_not_contains "$COMMAND_LOG" "git checkout"
+	assert_not_contains "$COMMAND_LOG" "gh pr create"
+
+	teardown_case
+	echo "ok - stops when the existing branch fetch fails"
+}
+
+test_stops_when_pull_request_edit_fails() {
+	setup_case '[{"number":42,"headRefName":"action/upgrade-to-6.7.0-1700000000","title":"Upgrade plugin to WordPress 6.7.0","isCrossRepository":false}]'
+	export GH_PR_EDIT_FAIL=true
+
+	if "$ROOT_DIR/check-upgrade.sh" > "$TEST_DIR/output.log" 2>&1; then
+		fail "Expected pull request edit failure to stop the action"
+	fi
+
+	assert_not_contains "$COMMAND_LOG" "gh api"
+	assert_not_contains "$COMMAND_LOG" "gh pr comment"
+	assert_not_contains "$COMMAND_LOG" "gh pr create"
+
+	teardown_case
+	echo "ok - stops when pull request edit fails"
+}
+
+test_updates_dependencies_when_package_exists() {
+	setup_case
+	export UPGRADE_DEPENDENCIES=true
+	printf '{}\n' > "$TEST_DIR/package.json"
+
+	(cd "$TEST_DIR" && "$ROOT_DIR/check-upgrade.sh") > "$TEST_DIR/output.log"
+
+	assert_contains "$COMMAND_LOG" "npm ci"
+	assert_contains "$COMMAND_LOG" "npx wp-scripts packages-update --dist-tag=wp-6.8.0"
+
+	teardown_case
+	echo "ok - updates dependencies when package.json exists"
+}
+
+test_skips_dependencies_when_package_is_missing() {
+	setup_case
+	export UPGRADE_DEPENDENCIES=true
+
+	(cd "$TEST_DIR" && "$ROOT_DIR/check-upgrade.sh") > "$TEST_DIR/output.log"
+
+	assert_contains "$TEST_DIR/output.log" "package.json does not exist, skipping dependency upgrade."
+	assert_not_contains "$COMMAND_LOG" "npm "
+	assert_not_contains "$COMMAND_LOG" "npx "
+
+	teardown_case
+	echo "ok - skips dependencies when package.json is missing"
+}
+
 test_updates_existing_pull_request
 test_skips_existing_pull_request_at_current_version
 test_creates_pull_request_when_none_exists
@@ -200,3 +273,8 @@ test_does_not_duplicate_update_note_on_retry
 test_selects_newest_same_repository_action_pull_request
 test_stops_when_pull_request_lookup_fails
 test_stops_when_comment_lookup_fails
+test_stops_before_github_when_default_branch_is_current
+test_stops_when_existing_branch_fetch_fails
+test_stops_when_pull_request_edit_fails
+test_updates_dependencies_when_package_exists
+test_skips_dependencies_when_package_is_missing
