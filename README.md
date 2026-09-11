@@ -44,6 +44,12 @@ jobs:
 The action assumes that a `package-lock.json` file exists in the root of the
 repository to run `npm ci`.
 
+When one or more open pull requests created by this action already exist, the
+action updates the newest pull request's branch, title, and checklist instead
+of opening another pull request. It also comments on the pull request with the
+previous and new WordPress versions. Closed and merged pull requests are not
+reused.
+
 ### Inputs
 
 - `plugin-file` - The name of the plugin's main file. Defaults to `plugin.php`.

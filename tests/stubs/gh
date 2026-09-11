@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+printf 'gh %s\n' "$*" >> "$COMMAND_LOG"
+
+if [ "$1 $2" = "pr edit" ] && [ "${GH_PR_EDIT_FAIL-}" = "true" ]; then
+	exit 1
+fi
+
+if [ "$1 $2" = "pr list" ]; then
+	if [ "${GH_PR_LIST_FAIL-}" = "true" ]; then
+		exit 1
+	fi
+
+	printf '%s\n' "$GH_PR_LIST_OUTPUT"
+fi
+
+if [ "$1" = "api" ]; then
+	if [ "${GH_API_FAIL-}" = "true" ]; then
+		exit 1
+	fi
+
+	printf '%s\n' "${GH_PR_COMMENTS_OUTPUT-}"
+fi

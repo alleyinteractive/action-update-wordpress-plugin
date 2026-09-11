@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ "${1-}" = "-V" ]; then
+	shift
+fi
+
+/usr/bin/sort "$@"
