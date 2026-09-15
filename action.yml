@@ -20,10 +20,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - id: resolve-node-version
+      if: ${{ inputs.upgrade-npm-dependencies != 'false' }}
+      env:
+        NODE_VERSION: ${{ inputs.node-version }}
+      run: ${{ github.action_path }}/resolve-node-version.sh
+      shell: bash
     - id: setup-node
-      uses: actions/setup-node@v3
+      if: ${{ inputs.upgrade-npm-dependencies != 'false' }}
+      uses: actions/setup-node@v7
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: ${{ steps.resolve-node-version.outputs.version }}
+        package-manager-cache: false
     - id: check-upgrade
       env:
         PLUGIN_FILE: ${{ inputs.plugin-file }}

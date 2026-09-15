@@ -1,0 +1,42 @@
+name: Update Major Version Tag
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  update-major-tag:
+    name: Update Major Version Tag
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.release.prerelease }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.release.tag_name }}
+    - name: Move the major version tag
+      env:
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+      run: |
+        case "$RELEASE_TAG" in
+          v[0-9]*.[0-9]*.[0-9]*) ;;
+          *)
+            echo "[major-version-tag] $RELEASE_TAG is not a vX.Y.Z tag, skipping."
+            exit 0
+            ;;
+        esac
+
+        MAJOR_TAG="${RELEASE_TAG%%.*}"
+
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git tag --force --annotate "$MAJOR_TAG" --message "A pointer to the latest release in the ${MAJOR_TAG#v}.x.x version." "$RELEASE_TAG"
+        git push --force origin "refs/tags/$MAJOR_TAG"
+
+        echo "[major-version-tag] $MAJOR_TAG now points at $RELEASE_TAG."
